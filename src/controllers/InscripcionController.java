@@ -2,17 +2,15 @@ package controllers;
 
 import models.AspiranteModel;
 import models.InscripcionModel;
-import views.InscripcionView;
-import views.MenuPrincipalView;
 import utils.Sesion;
+import views.InscripcionView;
 
 import javax.swing.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import views.MenuPrincipalView;
 
 public class InscripcionController {
 
@@ -26,59 +24,65 @@ public class InscripcionController {
     this.inscripcionModel = new InscripcionModel();
 
     inicializarEventos();
+    cargarProgramas();
   }
 
+  // Configura los listeners de los botones
   private void inicializarEventos() {
     vista.getBtnGuardar().addActionListener(e -> guardarInscripcion());
     vista.getBtnCancelar().addActionListener(e -> cancelar());
+    vista.getBtnSubirDocumentos().addActionListener(e -> subirDocumentos());
   }
 
   private void guardarInscripcion() {
     try {
-      // 1. Validar campos del formulario
+      // Validar campos
       String documentoIdentidad = vista.getDocumentoIdentidad();
       String nacionalidad = vista.getNacionalidad();
-      String fechaTexto = null;
-      try {
-        fechaTexto = vista.getFechaNacimiento();
-      } catch (ParseException ex) {
-        Logger.getLogger(InscripcionController.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      int idPrograma = vista.getComboProgramas().getSelectedIndex() + 1; // ID del programa seleccionado
+      String fechaTexto = vista.getFechaNacimiento();
+      int idPrograma = vista.getComboProgramas().getSelectedIndex() + 1; // ID programa (inicia desde 1)
       int idUsuario = Sesion.getInstance().getIdUsuario();
 
-      if (documentoIdentidad.isEmpty() || nacionalidad.isEmpty() || fechaTexto.isEmpty()) {
-        JOptionPane.showMessageDialog(vista, "Todos los campos son obligatorios.");
+      if (documentoIdentidad.isEmpty() || nacionalidad.isEmpty()) {
+        JOptionPane.showMessageDialog(vista, "Documento de identidad y nacionalidad son obligatorios.");
         return;
       }
 
-      // 2. Convertir fecha
+      // Validar y convertir la fecha de nacimiento
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      Date fechaNacimiento;
-      try {
-        fechaNacimiento = dateFormat.parse(fechaTexto);
-      } catch (ParseException e) {
-        JOptionPane.showMessageDialog(vista, "Formato de fecha incorrecto. Use yyyy-MM-dd.");
-        return;
-      }
+      Date fechaNacimiento = dateFormat.parse(fechaTexto);
 
-      // 3. Insertar aspirante y actualizar usuario
+      // Insertar el aspirante
       int idAspirante = aspiranteModel.guardarAspirante(idUsuario, documentoIdentidad, nacionalidad, fechaNacimiento);
-      aspiranteModel.actualizarTipoUsuario(idUsuario);
-      Sesion.getInstance().setIdTipoUsuario(2); // Actualizar tipo de usuario en sesión
 
-      // 4. Insertar inscripción
+      // Actualizar tipo de usuario
+      aspiranteModel.actualizarTipoUsuario(idUsuario);
+      Sesion.getInstance().setIdTipoUsuario(2); // Actualizar sesión
+
+      // Crear la inscripción
       inscripcionModel.guardarInscripcion(idAspirante, idPrograma);
 
       JOptionPane.showMessageDialog(vista, "Inscripción guardada correctamente.");
       vista.limpiarFormulario();
+    } catch (ParseException e) {
+      JOptionPane.showMessageDialog(vista, "Formato de fecha inválido. Use el formato yyyy-MM-dd.");
     } catch (SQLException e) {
       JOptionPane.showMessageDialog(vista, "Error al guardar la inscripción: " + e.getMessage());
     }
   }
 
+  private void cargarProgramas() {
+    // Aquí simulamos una lista de programas; en producción se cargaría desde la base de datos
+    String[] programas = {"Doctorado en Ciencias", "Maestría en Ingeniería", "Especialización en Finanzas"};
+    vista.setProgramas(programas);
+  }
+
   private void cancelar() {
     vista.dispose();
     new MenuPrincipalView();
+  }
+
+  private void subirDocumentos() {
+    JOptionPane.showMessageDialog(vista, "Funcionalidad de carga de documentos pendiente de implementación.");
   }
 }

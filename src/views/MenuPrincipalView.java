@@ -1,12 +1,13 @@
 package views;
 
+import controllers.InscripcionController;
+import controllers.ProgramasController;
 import javax.swing.*;
 import java.awt.*;
 
 import views.BaseView;
 import utils.Sesion;
 import utils.Tema;
-import controllers.ProgramasController;
 
 public class MenuPrincipalView extends BaseView {
 
@@ -170,8 +171,7 @@ public class MenuPrincipalView extends BaseView {
 
   private void abrirIniciarInscripcion() {
     dispose();
-    new InscripcionView();
-    // new InscripcionController(new InscripcionView());
+    new InscripcionController(new InscripcionView());
   }
 
   private void cerrarSesion() {
