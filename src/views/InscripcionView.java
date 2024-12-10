@@ -5,6 +5,7 @@ import utils.Tema;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -16,6 +17,7 @@ public class InscripcionView extends BaseView {
 
   public InscripcionView() {
     super("Proceso de Inscripción", 800, 500);
+    inicializarComponentes();
     setVisible(true);
   }
 
@@ -136,12 +138,10 @@ public class InscripcionView extends BaseView {
   }
 
   public String getFechaNacimiento() throws ParseException {
-    // Validar formato de fecha yyyy-MM-dd
     SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-    formato.setLenient(false); // Evita fechas incorrectas como 2023-02-30
-
+    formato.setLenient(false);
     String fechaTexto = txtFechaNacimiento.getText();
-    formato.parse(fechaTexto); // Lanza ParseException si el formato es inválido
+    formato.parse(fechaTexto);
     return fechaTexto;
   }
 
@@ -161,11 +161,8 @@ public class InscripcionView extends BaseView {
     return btnCancelar;
   }
 
-  public JComboBox<String> getComboProgramas() {
-    return comboProgramas;
-  }
-
-  public void setProgramas(String[] programas) {
+  public void setProgramas(List<String> programas) {
+    comboProgramas.removeAllItems();
     for (String programa : programas) {
       comboProgramas.addItem(programa);
     }
