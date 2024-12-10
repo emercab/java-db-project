@@ -50,7 +50,7 @@ public class LoginView extends BaseView {
 
     gbc.gridx = 1;
     txtEmail = new JTextField(20);
-    txtEmail.setText("emercab@gmail.com"); // Login default
+    txtEmail.setText("natiyiset@gmail.com"); // Login default
     Tema.estiloTexto(txtEmail, 350, 30);
     add(txtEmail, gbc);
 
