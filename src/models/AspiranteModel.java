@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.ResultSet;
 
 public class AspiranteModel {
 
@@ -13,15 +14,15 @@ public class AspiranteModel {
     String sql = "INSERT INTO aspirantes (id_usuario, documento_identidad, nacionalidad, fecha_nacimiento) VALUES (?, ?, ?, ?)";
     int idAspirante = -1;
 
-    try (Connection conn = Database.conectar(); PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+    try (Connection conn = Database.conectar(); PreparedStatement consulta = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      ps.setInt(1, idUsuario);
-      ps.setString(2, documentoIdentidad);
-      ps.setString(3, nacionalidad);
-      ps.setDate(4, new Date(fechaNacimiento.getTime())); // Conversión de java.util.Date a java.sql.Date
-      ps.executeUpdate();
+      consulta.setInt(1, idUsuario);
+      consulta.setString(2, documentoIdentidad);
+      consulta.setString(3, nacionalidad);
+      consulta.setDate(4, new Date(fechaNacimiento.getTime())); // Conversión de java.util.Date a java.sql.Date
+      consulta.executeUpdate();
 
-      var generatedKeys = ps.getGeneratedKeys();
+      var generatedKeys = consulta.getGeneratedKeys();
       if (generatedKeys.next()) {
         idAspirante = generatedKeys.getInt(1); // Obtener el ID generado
       }
@@ -33,10 +34,27 @@ public class AspiranteModel {
   public void actualizarTipoUsuario(int idUsuario) throws SQLException {
     String sql = "UPDATE usuarios SET id_tipo_usuario = 2 WHERE id_usuario = ?";
 
-    try (Connection conn = Database.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = Database.conectar(); PreparedStatement consulta = conn.prepareStatement(sql)) {
 
-      ps.setInt(1, idUsuario);
-      ps.executeUpdate();
+      consulta.setInt(1, idUsuario);
+      consulta.executeUpdate();
     }
+  }
+  
+  // Método para obtener el id del aspirante a partir del id de usuario
+  public int obtenerIdAspirante(int idUsuario) throws SQLException {
+    String sql = "SELECT id_aspirante FROM aspirantes WHERE id_usuario = ?";
+    int idAspirante = -1;
+    
+    try (Connection conn = Database.conectar(); PreparedStatement consulta = conn.prepareStatement(sql)) {
+      consulta.setInt(1, idUsuario);
+      ResultSet rs = consulta.executeQuery();
+      
+      if (rs.next()) {
+        idAspirante = rs.getInt("id_aspirante");
+      }
+    }
+    
+    return idAspirante;
   }
 }

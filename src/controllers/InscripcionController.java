@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 
 public class InscripcionController {
 
-  private InscripcionView vista;
-  private AspiranteModel aspiranteModel;
-  private InscripcionModel inscripcionModel;
-  private ProgramaModel programaModel;
+  private final InscripcionView vista;
+  private final AspiranteModel aspiranteModel;
+  private final InscripcionModel inscripcionModel;
+  private final ProgramaModel programaModel;
 
   public InscripcionController(InscripcionView vista) {
     this.vista = vista;
