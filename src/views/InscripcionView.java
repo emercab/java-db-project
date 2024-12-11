@@ -13,7 +13,7 @@ public class InscripcionView extends BaseView {
 
   private JTextField txtDocumentoIdentidad, txtNacionalidad, txtFechaNacimiento;
   private JComboBox<String> comboProgramas;
-  private JButton btnSubirDocumentos, btnGuardar, btnCancelar;
+  private JButton btnGuardar, btnCancelar;
 
   public InscripcionView() {
     super("Proceso de Inscripción", 800, 500);
@@ -98,16 +98,6 @@ public class InscripcionView extends BaseView {
     comboProgramas.setPreferredSize(new Dimension(400, 25));
     panelFormulario.add(comboProgramas, gbc);
 
-    // Botón: Subir Documentos
-    gbc.gridx = 0;
-    gbc.gridy = 4;
-    gbc.gridwidth = 2;
-    btnSubirDocumentos = new JButton("Subir Documentos");
-    Tema.estiloBoton(btnSubirDocumentos, Tema.COLOR_PRIMARIO, Tema.COLOR_BLANCO);
-    btnSubirDocumentos.setPreferredSize(new Dimension(200, 30));
-    btnSubirDocumentos.setFocusPainted(false);
-    panelFormulario.add(btnSubirDocumentos, gbc);
-
     add(panelFormulario, BorderLayout.CENTER);
 
     // -------------------- PANEL INFERIOR: BOTONES --------------------
@@ -147,10 +137,6 @@ public class InscripcionView extends BaseView {
 
   public String getProgramaSeleccionado() {
     return (String) comboProgramas.getSelectedItem();
-  }
-
-  public JButton getBtnSubirDocumentos() {
-    return btnSubirDocumentos;
   }
 
   public JButton getBtnGuardar() {

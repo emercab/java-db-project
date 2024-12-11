@@ -44,7 +44,7 @@ public class AspiranteModel {
   // Método para obtener el id del aspirante a partir del id de usuario
   public int obtenerIdAspirante(int idUsuario) throws SQLException {
     String sql = "SELECT id_aspirante FROM aspirantes WHERE id_usuario = ?";
-    int idAspirante = -1;
+    int idAspirante = 0;
     
     try (Connection conn = Database.conectar(); PreparedStatement consulta = conn.prepareStatement(sql)) {
       consulta.setInt(1, idUsuario);

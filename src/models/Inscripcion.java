@@ -2,15 +2,15 @@ package models;
 
 public class Inscripcion {
 
-  private int idAspirante;
+  private int id;
   private int idPrograma;
   private String fechaInscripcion;
   private int idEstadoInscripcion;
   private boolean documentosCompletos;
   private String observaciones;
 
-  public Inscripcion(int idAspirante, int idPrograma, String fechaInscripcion) {
-    this.idAspirante = idAspirante;
+  public Inscripcion(int id, int idPrograma, String fechaInscripcion) {
+    this.id = id;
     this.idPrograma = idPrograma;
     this.fechaInscripcion = fechaInscripcion;
     this.idEstadoInscripcion = 1; // Estado inicial: Pendiente
@@ -19,8 +19,8 @@ public class Inscripcion {
   }
 
   // Getters y Setters
-  public int getIdAspirante() {
-    return idAspirante;
+  public int getId() {
+    return id;
   }
 
   public int getIdPrograma() {

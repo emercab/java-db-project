@@ -5,6 +5,7 @@ import models.InscripcionModel;
 import models.ProgramaModel;
 import utils.Sesion;
 import views.InscripcionView;
+import views.DocumentosView;
 import views.MenuPrincipalView;
 
 import javax.swing.*;
@@ -35,7 +36,6 @@ public class InscripcionController {
   private void inicializarEventos() {
     vista.getBtnGuardar().addActionListener(e -> guardarInscripcion());
     vista.getBtnCancelar().addActionListener(e -> cancelar());
-    vista.getBtnSubirDocumentos().addActionListener(e -> subirDocumentos());
   }
 
   private void guardarInscripcion() {
@@ -68,7 +68,7 @@ public class InscripcionController {
       // Crear la inscripción
       inscripcionModel.guardarInscripcion(idAspirante, idPrograma);
 
-      JOptionPane.showMessageDialog(vista, "Inscripción guardada correctamente.");
+      JOptionPane.showMessageDialog(vista, "Inscripción guardada correctamente. Ahora como aspirante, debe subir los documentos desde el menú principal.");
 
       // Redirigir al menú principal
       vista.dispose(); // Cierra la ventana de inscripción
@@ -97,9 +97,5 @@ public class InscripcionController {
   private void cancelar() {
     vista.dispose();
     new MenuPrincipalView();
-  }
-
-  private void subirDocumentos() {
-    JOptionPane.showMessageDialog(vista, "Funcionalidad de carga de documentos pendiente de implementación.");
   }
 }

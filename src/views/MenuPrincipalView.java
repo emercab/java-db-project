@@ -1,5 +1,6 @@
 package views;
 
+import controllers.DocumentosController;
 import controllers.InscripcionController;
 import controllers.ProgramasController;
 import utils.Sesion;
@@ -84,8 +85,8 @@ public class MenuPrincipalView extends BaseView {
       agregarBotonConEtiqueta(
         panelBotones,
         gbc,
-        "Vea sus documentos aquí",
-        "Ir a Documentación",
+        "Suba sus documentos aquí",
+        "Ver Documentos",
         this::abrirDocumentos
       );
 
@@ -207,7 +208,7 @@ public class MenuPrincipalView extends BaseView {
 
   private void abrirDocumentos() {
     dispose();
-    //new DocumentosController(new DocumentosView());
+    new DocumentosController(new DocumentosView());
   }
 
   private void consultarEstadoInscripcion() {
