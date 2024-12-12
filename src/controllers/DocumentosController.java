@@ -101,7 +101,33 @@ public class DocumentosController {
   }
 
   private void enviarDocumento() {
-    // Implementación completa de envío.
+    // Preparo los campos que voy a guardar
+    String nombreDocumento = (String) this.vista.getComboTiposDocumentos().getSelectedItem();
+    int idTipoDocumento = 0;
+    String rutaDocumento = this.vista.getRutaArchivoSeleccionado();
+    try {
+      idTipoDocumento = tipoDocumentoModel.obtenerIdPorDescripcionDocumento(nombreDocumento);
+    } catch (SQLException ex) {
+      JOptionPane.showMessageDialog(vista, "Error al obtener id del tipo de documento.");
+      return;
+    }
+
+    try {
+      if (!documentoModel.existeDocumento(this.idAspirante, idTipoDocumento)) {
+        try {
+          documentoModel.guardarDocumento(this.idAspirante, idTipoDocumento, rutaDocumento);
+          JOptionPane.showMessageDialog(vista, "Documento guardado correctamente.");
+          cargarDocumentos();
+        } catch (SQLException ex) {
+          JOptionPane.showMessageDialog(vista, "Error al guardar documento.");
+          return;
+        }
+      } else {
+        JOptionPane.showMessageDialog(vista, "Este documento ya fue subido para este usuario.");
+      }
+    } catch (SQLException ex) {
+      JOptionPane.showMessageDialog(vista, "Error al validar documento existente.");
+    }
   }
 
   private void eliminarDocumento() {

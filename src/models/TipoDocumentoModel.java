@@ -23,4 +23,18 @@ public class TipoDocumentoModel {
     }
     return tipos;
   }
+  
+  // Obtener el ID de un tipo de documento por su descripcion
+  public int obtenerIdPorDescripcionDocumento(String DescripcionDocumento) throws SQLException {
+    String sql = "SELECT id FROM tipos_documento WHERE descripcion = ?";
+    try (Connection conn = Database.conectar(); PreparedStatement consulta = conn.prepareStatement(sql)) {
+
+      consulta.setString(1, DescripcionDocumento);
+      ResultSet rs = consulta.executeQuery();
+      if (rs.next()) {
+        return rs.getInt("id");
+      }
+    }
+    return 0; // Retorna 0 si no encuentra el nombre del tipo de documento
+  }
 }

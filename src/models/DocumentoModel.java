@@ -10,7 +10,7 @@ public class DocumentoModel {
 
   // Guardar un documento en la base de datos
   public void guardarDocumento(int idAspirante, int idTipoDocumento, String rutaDocumento) throws SQLException {
-    String sql = "INSERT INTO documentos (id_aspirante, id_tipo_documento, ruta_documento) VALUES (?, ?, ?)";
+    String sql = "INSERT INTO documentos (id_aspirante, id_tipo_documento, ruta_documento, fecha_subida) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
 
     try (Connection conn = Database.conectar(); PreparedStatement consulta = conn.prepareStatement(sql)) {
       consulta.setInt(1, idAspirante);
