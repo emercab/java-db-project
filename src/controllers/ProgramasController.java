@@ -1,13 +1,5 @@
 package controllers;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-/**
- *
- * @author FAMILIA CABRERA
- */
 import models.Programa;
 import models.ProgramaModel;
 import views.ProgramasView;
@@ -20,12 +12,12 @@ import java.util.List;
 public class ProgramasController {
 
   private ProgramasView vista;
-  private ProgramaModel modelo;
+  private ProgramaModel programaModel;
   private Integer idProgramaSeleccionado = null; // Guarda el ID si se está editando
 
   public ProgramasController(ProgramasView vista) {
     this.vista = vista;
-    this.modelo = new ProgramaModel();
+    this.programaModel = new ProgramaModel();
 
     inicializarEventos();
     cargarProgramas();
@@ -46,7 +38,7 @@ public class ProgramasController {
   // Cargar todos los programas en la tabla
   private void cargarProgramas() {
     try {
-      List<Programa> programas = modelo.obtenerProgramas();
+      List<Programa> programas = programaModel.obtenerProgramas();
       vista.cargarProgramasEnTabla(programas);
       vista.limpiarFormulario();
       idProgramaSeleccionado = null;
@@ -70,7 +62,7 @@ public class ProgramasController {
       String descripcion = vista.getDescripcionPrograma();
       int duracion = Integer.parseInt(vista.getDuracionPrograma());
 
-      modelo.agregarPrograma(nombre, descripcion, duracion);
+      programaModel.agregarPrograma(nombre, descripcion, duracion);
       mostrarMensaje("Programa agregado correctamente.");
       cargarProgramas();
     } catch (NumberFormatException ex) {
@@ -88,7 +80,7 @@ public class ProgramasController {
         String descripcion = vista.getDescripcionPrograma();
         int duracion = Integer.parseInt(vista.getDuracionPrograma());
 
-        modelo.actualizarPrograma(idProgramaSeleccionado, nombre, descripcion, duracion);
+        programaModel.actualizarPrograma(idProgramaSeleccionado, nombre, descripcion, duracion);
         mostrarMensaje("Programa actualizado correctamente.");
         cargarProgramas();
       } catch (NumberFormatException ex) {
@@ -105,7 +97,7 @@ public class ProgramasController {
       int confirmacion = JOptionPane.showConfirmDialog(vista, "¿Está seguro de eliminar este programa?", "Confirmar", JOptionPane.YES_NO_OPTION);
       if (confirmacion == JOptionPane.YES_OPTION) {
         try {
-          modelo.eliminarPrograma(idProgramaSeleccionado);
+          programaModel.eliminarPrograma(idProgramaSeleccionado);
           mostrarMensaje("Programa eliminado correctamente.");
           cargarProgramas();
         } catch (SQLException ex) {
@@ -120,7 +112,7 @@ public class ProgramasController {
     String buscarTexto = vista.getBuscarTexto();
     if (!buscarTexto.isEmpty()) {
       try {
-        List<Programa> programas = modelo.buscarProgramas(buscarTexto);
+        List<Programa> programas = programaModel.buscarProgramas(buscarTexto);
         vista.cargarProgramasEnTabla(programas);
       } catch (SQLException e) {
         mostrarError("Error al buscar programas: " + e.getMessage());

@@ -9,12 +9,9 @@ import views.DocumentosView;
 import views.MenuPrincipalView;
 
 import javax.swing.*;
-import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DocumentosController {
 
@@ -71,7 +68,7 @@ public class DocumentosController {
       vista.setDocumentosFaltantes(faltantes);
       vista.actualizarContadorDocumentos(documentos.size(), tipoDocumentoModel.obtenerTiposDocumentos().size());
     } catch (SQLException e) {
-      e.printStackTrace();
+      JOptionPane.showMessageDialog(vista, "Error al cargar los documentos: " + e.getMessage());
     }
   }
 
@@ -101,37 +98,68 @@ public class DocumentosController {
   }
 
   private void enviarDocumento() {
-    // Preparo los campos que voy a guardar
-    String nombreDocumento = (String) this.vista.getComboTiposDocumentos().getSelectedItem();
-    int idTipoDocumento = 0;
-    String rutaDocumento = this.vista.getRutaArchivoSeleccionado();
-    try {
-      idTipoDocumento = tipoDocumentoModel.obtenerIdPorDescripcionDocumento(nombreDocumento);
-    } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(vista, "Error al obtener id del tipo de documento.");
+    String nombreDocumento = (String) vista.getComboTiposDocumentos().getSelectedItem();
+    String rutaDocumento = vista.getRutaArchivoSeleccionado();
+
+    if (nombreDocumento == null || rutaDocumento == null || rutaDocumento.isEmpty()) {
+      JOptionPane.showMessageDialog(vista, "Debe seleccionar un tipo de documento y un archivo.");
       return;
     }
 
     try {
+      int idTipoDocumento = obtenerIdTipoDocumento(nombreDocumento);
+
+      if (idTipoDocumento <= 0) {
+        JOptionPane.showMessageDialog(vista, "Tipo de documento inválido.");
+        return;
+      }
+
       if (!documentoModel.existeDocumento(this.idAspirante, idTipoDocumento)) {
-        try {
-          documentoModel.guardarDocumento(this.idAspirante, idTipoDocumento, rutaDocumento);
-          JOptionPane.showMessageDialog(vista, "Documento guardado correctamente.");
-          cargarDocumentos();
-        } catch (SQLException ex) {
-          JOptionPane.showMessageDialog(vista, "Error al guardar documento.");
-          return;
-        }
+        guardarDocumento(idTipoDocumento, rutaDocumento);
+        JOptionPane.showMessageDialog(vista, "Documento guardado correctamente.");
+        cargarDocumentos(); // Recargar los documentos en la tabla
       } else {
         JOptionPane.showMessageDialog(vista, "Este documento ya fue subido para este usuario.");
       }
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(vista, "Error al validar documento existente.");
+      JOptionPane.showMessageDialog(vista, "Error al guardar el archivo: " + ex.getMessage());
     }
   }
 
+  // Método auxiliar: Obtener ID del tipo de documento
+  private int obtenerIdTipoDocumento(String nombreDocumento) throws SQLException {
+    return tipoDocumentoModel.obtenerIdPorDescripcionDocumento(nombreDocumento);
+  }
+
+  // Método auxiliar: Guardar documento en la base de datos
+  private void guardarDocumento(int idTipoDocumento, String rutaDocumento) throws SQLException {
+    documentoModel.guardarDocumento(this.idAspirante, idTipoDocumento, rutaDocumento);
+  }
+
   private void eliminarDocumento() {
-    // Implementación completa de eliminación.
+    int filaSeleccionada = vista.getTablaDocumentos().getSelectedRow();
+
+    if (filaSeleccionada == -1) {
+      JOptionPane.showMessageDialog(vista, "Seleccione un documento a eliminar.");
+      return;
+    }
+
+    String rutaDocumento = (String) vista.getTablaDocumentos().getValueAt(filaSeleccionada, 2);
+
+    int confirmacion = JOptionPane.showConfirmDialog(
+      vista, "¿Está seguro de eliminar el documento?",
+      "Confirmar Eliminación", JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirmacion == JOptionPane.YES_OPTION) {
+      try {
+        documentoModel.eliminarDocumento(rutaDocumento);
+        cargarDocumentos(); // Recargar la tabla
+        JOptionPane.showMessageDialog(vista, "Documento eliminado correctamente.");
+      } catch (SQLException e) {
+        JOptionPane.showMessageDialog(vista, "Error al eliminar el documento: " + e.getMessage());
+      }
+    }
   }
 
   private void cancelar() {
